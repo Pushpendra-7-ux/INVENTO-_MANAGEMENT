@@ -165,7 +165,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         const Text('Unit Price', style: TextStyle(color: AppColors.subtitleText, fontSize: 11)),
-                        GradientText('\$${product.price.toStringAsFixed(2)}',
+                        GradientText('₹${product.price.toStringAsFixed(2)}',
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ],

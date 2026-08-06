@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/colors.dart';
@@ -146,7 +147,7 @@ class _AddProductContent extends StatelessWidget {
                 Expanded(
                   child: CustomTextField(
                     controller: vm.priceController,
-                    label: 'Price',
+                    label: 'Price (₹)',
                     hint: '0.00',
                     keyboardType: TextInputType.number,
                     validator: Validators.price,
@@ -229,11 +230,17 @@ class _AddProductContent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         child: vm.imagePath!.startsWith('http')
                             ? Image.network(vm.imagePath!, fit: BoxFit.cover)
-                            : Image.file(File(vm.imagePath!), fit: BoxFit.cover,
-                                errorBuilder: (ctx, err, stack) => const Center(
-                                  child: Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 40),
-                                ),
-                              ),
+                            : (kIsWeb
+                                ? Image.network(vm.imagePath!, fit: BoxFit.cover,
+                                    errorBuilder: (ctx, err, stack) => const Center(
+                                      child: Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 40),
+                                    ),
+                                  )
+                                : Image.file(File(vm.imagePath!), fit: BoxFit.cover,
+                                    errorBuilder: (ctx, err, stack) => const Center(
+                                      child: Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 40),
+                                    ),
+                                  )),
                       ),
               ),
             ),

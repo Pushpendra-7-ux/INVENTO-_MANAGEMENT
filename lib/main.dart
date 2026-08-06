@@ -1,10 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'core/services/db.dart';
 import 'core/routes/routes.dart';
 import 'core/theme/colors.dart';
 import 'data/database/database_helper.dart';
-import 'data/database/seed_data.dart';
 import 'data/repositories/product_repository_impl.dart';
 import 'data/repositories/transaction_repository_impl.dart';
 import 'domain/usecases/product_usecases.dart';
@@ -20,14 +22,18 @@ import 'presentation/viewmodels/product_detail_viewmodel.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Set the web database factory before anything else
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
+  
   final dbHelper = DatabaseHelper();
   
-  await SqliteService.instance.database;
-  
-  // Seed initial dataset if first boot on clean DB
-  final products = await dbHelper.getAllProducts();
-  if (products.isEmpty) {
-    await SeedData.seedDatabase(dbHelper);
+  // Initialize database — wrapped in try-catch so the app always starts
+  try {
+    await SqliteService.instance.database;
+  } catch (e) {
+    debugPrint('Database initialization error: $e');
   }
   
   final productRepository = ProductRepositoryImpl(dbHelper);
@@ -97,4 +103,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

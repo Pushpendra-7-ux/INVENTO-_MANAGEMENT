@@ -56,18 +56,24 @@ class DashboardCard extends StatelessWidget {
                     child: Icon(icon, color: iconBackgroundColor, size: 28),
                   ),
                   const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: const TextStyle(color: AppColors.subtitleText, fontSize: 14)),
-                      Text(value, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title, style: const TextStyle(color: AppColors.subtitleText, fontSize: 14)),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(value, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               Text(
-                'Live metric tracked via sqlite inventory transactions.',
+                'Live metric tracked via inventory database.',
                 style: TextStyle(color: AppColors.subtitleText.withValues(alpha: 0.8), fontSize: 13),
               ),
               const SizedBox(height: 16),
@@ -80,17 +86,19 @@ class DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 180,
+    return Container(
+      width: 195,
+      constraints: const BoxConstraints(minHeight: 100),
       child: CustomCard(
         onTap: onTap ?? () => _showMetricDetail(context),
         onLongPress: onLongPress ?? () => _showMetricDetail(context),
         glowColor: iconBackgroundColor,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: iconBackgroundColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
@@ -98,10 +106,10 @@ class DashboardCard extends StatelessWidget {
               child: Icon(
                 icon,
                 color: iconBackgroundColor,
-                size: 28,
+                size: 24,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,19 +117,26 @@ class DashboardCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: AppColors.subtitleText,
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
+                      height: 1.2,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      color: AppColors.whiteColor,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        color: AppColors.whiteColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

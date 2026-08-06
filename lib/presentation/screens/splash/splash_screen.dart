@@ -26,20 +26,30 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
 
-    final authProvider = context.read<AuthProvider>();
-    final isLoggedIn = await authProvider.checkSession();
+    try {
+      final authProvider = context.read<AuthProvider>();
+      final isLoggedIn = await authProvider.checkSession();
 
-    if (!mounted) return;
-
-    if (isLoggedIn) {
-      // Load the user's data before navigating to home
-      await context.read<InventoryProvider>().fetchAllProducts();
-      await context.read<DashboardProvider>().refreshDashboard();
-      await context.read<TransactionProvider>().fetchAllTransactions();
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(Routes.home);
-    } else {
-      Navigator.of(context).pushReplacementNamed(Routes.login);
+
+      if (isLoggedIn) {
+        try {
+          await context.read<InventoryProvider>().fetchAllProducts();
+          await context.read<DashboardProvider>().refreshDashboard();
+          await context.read<TransactionProvider>().fetchAllTransactions();
+        } catch (e) {
+          debugPrint('Error loading initial data: $e');
+        }
+        if (!mounted) return;
+        Navigator.of(context).pushReplacementNamed(Routes.home);
+      } else {
+        Navigator.of(context).pushReplacementNamed(Routes.login);
+      }
+    } catch (e) {
+      debugPrint('Error checking session on splash: $e');
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(Routes.login);
+      }
     }
   }
 

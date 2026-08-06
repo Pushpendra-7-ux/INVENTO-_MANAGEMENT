@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
 import '../../domain/entities/product_entity.dart';
@@ -9,6 +10,9 @@ import 'status_badge.dart';
 
 ImageProvider _getImgProvider(String path) {
   if (path.startsWith('http://') || path.startsWith('https://')) {
+    return NetworkImage(path);
+  }
+  if (kIsWeb) {
     return NetworkImage(path);
   }
   return FileImage(File(path));
@@ -224,7 +228,7 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         GradientText(
-                          '\$${product.price.toStringAsFixed(2)}',
+                          '₹${product.price.toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,

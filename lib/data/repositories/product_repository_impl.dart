@@ -47,6 +47,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<bool> isQrCodeExists(String qrCode, [String? excludeId]) async {
+    if (qrCode.trim().isEmpty) return false;
     final product = await databaseHelper.getProductByQrCode(qrCode);
     if (product == null) return false;
     if (excludeId != null && product.id == excludeId) return false;
@@ -55,6 +56,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<bool> isSkuExists(String sku, [String? excludeId]) async {
+    if (sku.trim().isEmpty) return false;
     final product = await databaseHelper.getProductBySku(sku);
     if (product == null) return false;
     if (excludeId != null && product.id == excludeId) return false;

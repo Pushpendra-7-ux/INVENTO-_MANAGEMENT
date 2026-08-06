@@ -136,8 +136,8 @@ class ReportsScreen extends StatelessWidget {
                 children: [
                   DashboardCard(
                     title: 'Total Portfolio Value',
-                    value: '\$${(dashboardProvider.stats['totalValue'] ?? 0.0).toStringAsFixed(0)}',
-                    icon: Icons.attach_money_rounded,
+                    value: '₹${(dashboardProvider.stats['totalValue'] ?? 0.0).toStringAsFixed(0)}',
+                    icon: Icons.currency_rupee_rounded,
                     iconBackgroundColor: AppColors.successColor,
                   ),
                   const SizedBox(width: 12),

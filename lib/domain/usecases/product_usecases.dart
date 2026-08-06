@@ -34,14 +34,14 @@ class AddProduct {
   AddProduct(this.repository);
 
   Future<void> call(ProductEntity product) async {
-    if (product.qrCode != null && product.qrCode!.isNotEmpty) {
+    if (product.qrCode != null && product.qrCode!.trim().isNotEmpty) {
       final qrExists = await repository.isQrCodeExists(product.qrCode!);
       if (qrExists) {
         throw const DuplicateException('QR Code already exists', 'qrCode');
       }
     }
 
-    if (product.sku != null && product.sku!.isNotEmpty) {
+    if (product.sku != null && product.sku!.trim().isNotEmpty) {
       final skuExists = await repository.isSkuExists(product.sku!);
       if (skuExists) {
         throw const DuplicateException('SKU already exists', 'sku');
@@ -57,14 +57,14 @@ class UpdateProduct {
   UpdateProduct(this.repository);
 
   Future<void> call(ProductEntity product) async {
-    if (product.qrCode != null && product.qrCode!.isNotEmpty) {
+    if (product.qrCode != null && product.qrCode!.trim().isNotEmpty) {
       final qrExists = await repository.isQrCodeExists(product.qrCode!, product.id);
       if (qrExists) {
         throw const DuplicateException('QR Code already exists', 'qrCode');
       }
     }
 
-    if (product.sku != null && product.sku!.isNotEmpty) {
+    if (product.sku != null && product.sku!.trim().isNotEmpty) {
       final skuExists = await repository.isSkuExists(product.sku!, product.id);
       if (skuExists) {
         throw const DuplicateException('SKU already exists', 'sku');

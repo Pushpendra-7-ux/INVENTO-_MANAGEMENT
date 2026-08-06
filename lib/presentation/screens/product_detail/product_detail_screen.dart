@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/colors.dart';
@@ -168,12 +169,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: product.image?.isNotEmpty == true
                     ? (product.image!.startsWith('http')
                         ? Image.network(product.image!, fit: BoxFit.cover)
-                        : Image.file(File(product.image!), fit: BoxFit.cover,
-                            errorBuilder: (ctx, err, stack) => Container(
-                              color: AppColors.surfaceMedium,
-                              child: const Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 60),
-                            ),
-                          ))
+                        : (kIsWeb
+                            ? Image.network(product.image!, fit: BoxFit.cover,
+                                errorBuilder: (ctx, err, stack) => Container(
+                                  color: AppColors.surfaceMedium,
+                                  child: const Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 60),
+                                ),
+                              )
+                            : Image.file(File(product.image!), fit: BoxFit.cover,
+                                errorBuilder: (ctx, err, stack) => Container(
+                                  color: AppColors.surfaceMedium,
+                                  child: const Icon(Icons.image_not_supported, color: AppColors.subtitleText, size: 60),
+                                ),
+                              )))
                     : Container(
                         decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
                         child: Center(
@@ -247,7 +255,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               const Text('Unit Price', style: TextStyle(color: AppColors.subtitleText, fontSize: 12)),
                               const SizedBox(height: 4),
                               GradientText(
-                                '\$${product.price.toStringAsFixed(2)}',
+                                '₹${product.price.toStringAsFixed(2)}',
                                 style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                               ),
                             ],

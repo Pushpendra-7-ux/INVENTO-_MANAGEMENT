@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import '../constants/tables.dart';
 
@@ -17,6 +19,28 @@ class SqliteService {
   }
 
   Future<Database> _initDatabase() async {
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+      try {
+        return await openDatabase(
+          Tables.databaseName,
+          version: Tables.databaseVersion,
+          onCreate: _onCreate,
+          onUpgrade: _onUpgrade,
+        );
+      } catch (e) {
+        debugPrint('IndexedDB initialization failed on Web, falling back to in-memory database: $e');
+        return await databaseFactoryFfiWeb.openDatabase(
+          inMemoryDatabasePath,
+          options: OpenDatabaseOptions(
+            version: Tables.databaseVersion,
+            onCreate: _onCreate,
+            onUpgrade: _onUpgrade,
+          ),
+        );
+      }
+    }
+
     final path = join(await getDatabasesPath(), Tables.databaseName);
     return await openDatabase(
       path,
@@ -77,6 +101,9 @@ class SqliteService {
   }
 
   Future<String> backupDatabase() async {
+    if (kIsWeb) {
+      throw UnsupportedError('Database backup is not supported on web browser.');
+    }
     final db = await database;
     final dbPath = db.path;
     final docs = await getApplicationDocumentsDirectory();
@@ -91,6 +118,9 @@ class SqliteService {
   }
 
   Future<void> restoreDatabase(String backupPath) async {
+    if (kIsWeb) {
+      throw UnsupportedError('Database restore is not supported on web browser.');
+    }
     final db = await database;
     final dbPath = db.path;
 
